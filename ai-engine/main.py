@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import List
+from services.trust_analyzer import analyze_trust_data
+from services.testing_analyzer import analyze_testing_data
 
 app = FastAPI(title="ModelLedger AI Analysis Engine")
 
@@ -30,34 +32,22 @@ class AIAnalysisResponse(BaseModel):
 async def analyze_trust(request: TrustAnalysisRequest):
     """
     Evaluates artifact characteristics and provenance information.
-    Provides analytical evidence supporting the blockchain records.
     """
-    return AIAnalysisResponse(
-        consistency_score=0.91,
-        risk_score=18,
-        confidence=0.87,
-        anomaly_detected=False,
-        classification="CONSISTENT",
-        evidence=[
-            f"Artifact {request.artifact_hash[:8]}... aligns with claimed model ID {request.model_id}.",
-            "Metadata structure passes initial validation."
-        ]
+    result = analyze_trust_data(
+        request.model_id, 
+        request.version, 
+        request.artifact_hash, 
+        request.metadata
     )
+    return AIAnalysisResponse(**result)
 
 @app.post("/api/v1/analyze/testing", response_model=AIAnalysisResponse)
 async def analyze_testing(request: TestingAnalysisRequest):
     """
     Evaluates test records and quality metrics.
-    Provides risk indicators for the Model Lifecycle status.
     """
-    return AIAnalysisResponse(
-        consistency_score=0.88,
-        risk_score=22,
-        confidence=0.84,
-        anomaly_detected=False,
-        classification="ACCEPTABLE_RISK",
-        evidence=[
-            f"Test type '{request.test_type}' analyzed successfully for version {request.version}.",
-            "Performance metrics within expected bounds."
-        ]
+    result = analyze_testing_data(
+        request.test_type, 
+        request.test_data_summary
     )
+    return AIAnalysisResponse(**result)
