@@ -44,4 +44,5 @@ def test_testing_analyzer_high_risk():
         test_data_summary={"accuracy": 0.65, "error_rate": 0.25}
     )
     assert result["classification"] == "HIGH_RISK"
-    assert result["risk_score"] == 55 # 30 for low accuracy + 25 for high error rate
+    assert result["anomaly_detected"] is True  # The ML model now catches this!
+    assert result["risk_score"] == 95  # 30 (acc) + 25 (err) + 40 (ML anomaly penalty)
