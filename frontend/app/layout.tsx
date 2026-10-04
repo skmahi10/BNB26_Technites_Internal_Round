@@ -4,7 +4,7 @@ import './globals.css';
 import { AppShell } from '@/components/layout/AppShell';
 
 export const metadata: Metadata = {
-  title: 'ModelLedger — Model trust & provenance',
+  title: 'Orivyn — Model trust & provenance',
   description: 'Model provenance, testing, lifecycle, and verification workspace.',
 };
 

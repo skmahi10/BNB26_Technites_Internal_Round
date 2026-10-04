@@ -54,7 +54,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   border: 2px solid var(--line-dark); border-radius: 8px; color: #fffaf1; background: var(--red); box-shadow: 2px 2px 0 var(--line-dark);
 }
 .brand-mark svg { width: 18px; height: 18px; }
-.brand-name { color: #30261f; font-size: 14px; font-weight: 790; letter-spacing: .055em; }
+.brand-name { color: #30261f; font-size: 18px; font-weight: 790; letter-spacing: .055em; }
 .brand-name span { color: #bb4337; }
 .nav-groups { display: flex; flex-direction: column; gap: 13px; }
 .nav-group-label { padding: 4px 11px 6px; color: #958471; font-size: 9px; font-weight: 730; letter-spacing: .13em; text-transform: uppercase; }
@@ -338,7 +338,7 @@ body { background: var(--canvas); color: var(--ink); }
 .sidebar { width: 238px; padding: 17px 12px 13px; border-right: 2px solid var(--line-dark); background: var(--sidebar); }
 .brand { min-height: 62px; margin: 0 -12px 18px; padding: 0 18px 14px; border-bottom: 1.5px solid #d9cbb8; gap: 10px; }
 .brand-mark { width: 31px; height: 31px; flex-basis: 31px; border-radius: 8px; background: var(--red); }
-.brand-name { font-size: 13px; letter-spacing: .045em; }
+.brand-name { font-size: 18px; letter-spacing: .045em; }
 .nav-group-label { padding: 5px 10px 7px; color: #9c8b75; font-size: 8px; }
 .nav-list { gap: 4px; }
 .nav-link { min-height: 37px; border-radius: 8px; color: #756552; }
@@ -613,7 +613,7 @@ h1 { font-size: 25px; }
 @media (max-width: 700px) {
   .sidebar { position: sticky; inset: auto; z-index: 30; width: 100%; height: auto; min-height: 0; padding: 8px 10px; border-right: 0; border-bottom: 2px solid var(--line-dark); }
   .brand { justify-content: flex-start; min-height: 0; margin: 0; padding: 0 2px 8px; border-bottom: 0; }
-  .brand-name { display: inline; font-size: 12px; }
+  .brand-name { display: inline; font-size: 15px; }
   .nav-group-label { display: none; }
   .nav-list { flex-direction: row; gap: 4px; overflow-x: auto; padding-bottom: 2px; }
   .nav-link { width: 36px; min-height: 34px; flex: 0 0 36px; }

@@ -31,9 +31,9 @@ export function Sidebar() {
 
   return (
     <aside className="sidebar" aria-label="Main navigation">
-      <Link className="brand" href="/" aria-label="ModelLedger dashboard">
+      <Link className="brand" href="/" aria-label="Orivyn dashboard">
         <span className="brand-mark"><Icon name="shield" size={18} /></span>
-        <span className="brand-name">MODEL<span>LEDGER</span></span>
+        <span className="brand-name">Ori<span>vyn</span></span>
       </Link>
 
       <div className="nav-group-label">Workspace</div>

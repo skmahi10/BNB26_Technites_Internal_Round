@@ -1,6 +1,6 @@
-# ModelLedger frontend
+# Orivyn frontend
 
-Standalone Next.js App Router frontend for ModelLedger. It uses React, TypeScript, Tailwind CSS, Recharts, and React Flow. The approved visual direction is a warm beige-and-red palette, tactile outlined cards and buttons, and playful pictographic page marks; the supplied HTML is used as a layout/navigation reference, not as the dark color theme. This project contains no backend, database, AI/ML implementation, smart contract, blockchain client, or secret credentials.
+Standalone Next.js App Router frontend for Orivyn. It uses React, TypeScript, Tailwind CSS, Recharts, and React Flow. The approved visual direction is a warm beige-and-red palette, tactile outlined cards and buttons, and playful pictographic page marks; the supplied HTML is used as a layout/navigation reference, not as the dark color theme. This project contains no backend, database, AI/ML implementation, smart contract, blockchain client, or secret credentials.
 
 ## Run locally
 
