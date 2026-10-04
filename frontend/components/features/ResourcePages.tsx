@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useMemo, useState, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
+import { useRouter } from 'next/navigation';
 import { ApiNotice, EmptyState, ResourceBoundary } from '@/components/ui/States';
 import { Card } from '@/components/ui/Card';
 import { EvidenceGroups } from '@/components/ui/EvidenceItem';
@@ -229,17 +230,65 @@ function ArtifactRegistryCell({ item }: { item: ArtifactRecord }) {
 }
 
 export function VerificationPage() {
+  const router = useRouter();
   const state = useApi<unknown>('verifications');
   const [selectedId, setSelectedId] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const artifactInputRef = useRef<HTMLInputElement>(null);
   const parsed = state.data !== null ? listFromPayload<VerificationRecord>(state.data) : null;
   const records = parsed?.items ?? [];
   const selected = records.find((item) => item.verificationId === selectedId) ?? records[0];
   const evidence = selected?.evidence ?? [];
   const aiEvidenceCount = evidence.filter((item) => item.type.toLowerCase() === 'ai').length;
 
+  const openArtifactPicker = () => {
+    setUploadError(null);
+    artifactInputRef.current?.click();
+  };
+
+  const uploadArtifact = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('claimed_model', `model_frontend_${Date.now()}`);
+      formData.append('artifact_type', file.type || 'file');
+
+      const response = await fetch('http://127.0.0.1:8000/api/artifacts', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const message = await response.text().catch(() => '');
+        throw new Error(message || `Artifact upload failed with status ${response.status}`);
+      }
+
+      const payload = await response.json() as { artifactId?: string };
+      if (!payload.artifactId) throw new Error('Artifact upload succeeded, but no artifactId was returned.');
+
+      router.push(artifactHref(payload.artifactId));
+    } catch (error) {
+      setUploadError(error instanceof Error ? error.message : 'Artifact upload failed. Please try again.');
+    } finally {
+      setUploading(false);
+      event.target.value = '';
+    }
+  };
+
   return <>
-    <PageHeader eyebrow="Verification center · evidence-first results" title="Verify an artifact" description="A clear trust decision backed by inspectable evidence—not a black-box score." actions={<Button type="button" disabled title="A verification action requires the documented FastAPI request endpoint."><Icon name="upload" size={13} />Choose artifact</Button>} />
+    <PageHeader eyebrow="Verification center · evidence-first results" title="Verify an artifact" description="A clear trust decision backed by inspectable evidence—not a black-box score." actions={<>
+      <input ref={artifactInputRef} type="file" onChange={uploadArtifact} className="sr-only" aria-label="Choose artifact file" />
+      <Button type="button" onClick={openArtifactPicker} disabled={uploading}><Icon name="upload" size={13} />{uploading ? 'Uploading...' : 'Choose artifact'}</Button>
+    </>} />
     <ApiNotice state={state} resource="verification" />
+    {uploadError ? <div className="state-panel error" role="alert"><span className="state-icon"><Icon name="warning" size={16} /></span><div className="state-copy"><strong>Artifact upload failed</strong><p>{uploadError}</p></div></div> : null}
     {state.data !== null && !parsed ? <ResponseShapeError resource="verifications" /> : null}
 
     {records.length > 1 ? <div className="verification-select-row"><label htmlFor="verificationSelect">Backend verification record</label><select id="verificationSelect" className="select-input" value={selected?.verificationId ?? ''} onChange={(event) => setSelectedId(event.target.value)}>{records.map((item) => <option key={item.verificationId} value={item.verificationId}>{item.verificationId}</option>)}</select></div> : null}
@@ -275,7 +324,7 @@ export function VerificationPage() {
       </Card>
     </div>
 
-    <div className="verify-another"><span className="verify-another-icon"><Icon name="upload" size={15} /></span><span><strong>Verify another artifact</strong><small>Artifact upload and verification requests will be enabled when the FastAPI action contract is supplied.</small></span><Button size="sm" type="button" disabled title="No upload route is configured"><Icon name="upload" size={12} />Choose file</Button></div>
+    <div className="verify-another"><span className="verify-another-icon"><Icon name="upload" size={15} /></span><span><strong>Verify another artifact</strong><small>Upload an artifact through FastAPI to register it, run analysis, anchor evidence, and inspect the returned artifact page.</small></span><Button size="sm" type="button" onClick={openArtifactPicker} disabled={uploading}><Icon name="upload" size={12} />{uploading ? 'Uploading...' : 'Choose file'}</Button></div>
   </>;
 }
 
